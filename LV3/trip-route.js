@@ -16,8 +16,7 @@ const solution = (tickets) => {
 
 const dfs = (idx, visited, tickets, temp, answer) => {
   if (temp.length === tickets.length + 1) {
-    const a = [...temp];
-    answer.push(a);
+    answer.push([...temp]);
     return;
   }
   visited[idx] = true;
