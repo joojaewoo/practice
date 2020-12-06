@@ -8,7 +8,7 @@ const heapSort = (arr) => {
 
 const heapify = (arr, parent, child) => {
   if (!arr[child]) return;
-  else if (!arr[child + 1]) {
+  if (!arr[child + 1]) {
     if (arr[child] > arr[parent]) {
       swap(arr, child, parent);
     }
