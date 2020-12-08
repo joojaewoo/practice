@@ -5,9 +5,8 @@ const solution = (triangle) => {
   }
   dp[0][0] = triangle[0][0];
   for (let i = 1; i < triangle.length; i++) {
-    p[i][i] = triangle[i][i] + dp[i - 1][i - 1];
+    dp[i][i] = triangle[i][i] + dp[i - 1][i - 1];
     dp[i][0] = triangle[i][0] + dp[i - 1][0];
-    d;
   }
   for (let i = 2; i < triangle.length; i++) {
     for (let j = 1; j < i; j++) {
