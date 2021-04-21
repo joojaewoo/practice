@@ -1,5 +1,4 @@
 const solution = (n, works) => {
-  const N = works.length;
   const sum = works.reduce((acc, cur) => acc + cur, 0);
   if (sum <= n) return 0;
   const obj = {};
