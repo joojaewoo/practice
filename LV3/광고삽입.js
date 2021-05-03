@@ -10,46 +10,27 @@ const solution = (play_time, adv_time, logs) => {
     arr.unshift(Math.floor(time % 60));
     time = Math.floor(time / 60);
     arr.unshift(time);
-    console.log(arr.map((item) => item.toString().padStart('0', 2)));
     return arr.map((item) => item.toString().padStart(2, 0)).join(':');
   };
   if (play_time <= adv_time) return '00:00:00';
-  const map = new Array(360000).fill(0);
-  const set = new Set();
+  const playTime = makeTime(play_time);
+  const map = Array(playTime + 1).fill(0);
   const advTime = makeTime(adv_time);
-  const log = logs.flatMap((item) => {
+  const log = logs.map((item) => {
     const [start, end] = item.split('-').map((item) => makeTime(item));
-    for (let i = start; i < end; i++) {
-      map[i] += 1;
-    }
+    map[start]++;
+    map[end]--;
     return [start, end];
   });
-  const arr = [];
+  for (let i = 1; i <= playTime; i++) map[i] += map[i - 1];
+  for (let i = 1; i <= playTime; i++) map[i] += map[i - 1];
+  let sum = map[advTime - 1];
   let idx = 0;
-  let sum = 0;
-  let maxSum = 0;
-  for (let i = 0; i < advTime; i++) {
-    sum += map[i];
-    arr.push(map[i]);
-  }
-  for (let i = advTime; i < makeTime(play_time); i++) {
-    sum += map[i];
-    arr.push(map[i]);
-    sum -= arr.shift();
-    if (sum > maxSum) {
+  for (let i = advTime - 1; i < playTime; i++) {
+    if (sum < map[i] - map[i - advTime]) {
+      sum = map[i] - map[i - advTime];
       idx = i - advTime + 1;
-      maxSum = sum;
     }
   }
   return makeString(idx);
 };
-
-console.log(
-  solution('02:03:55', '00:14:15', [
-    '01:20:15-01:45:14',
-    '00:40:31-01:00:00',
-    '00:25:50-00:48:29',
-    '01:30:59-01:53:29',
-    '01:37:44-02:02:30',
-  ]),
-);
