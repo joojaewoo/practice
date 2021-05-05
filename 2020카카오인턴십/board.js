@@ -1,54 +1,22 @@
 const solution = (board) => {
-  const dp = [];
   const N = board.length;
-  for (let i in board) {
-    dp[i] = new Array(N);
-    for (let j in board) {
-      dp[i][j] = new Array(4).fill(Infinity);
-    }
-  }
-  const queue = [];
-  dp[0][0][0] = 0;
-  dp[0][0][1] = 0;
-  dp[0][0][2] = 0;
-  dp[0][0][3] = 0;
-  queue.push({ x: 0, y: 0 });
-  const dx = [1, 0, -1, 0];
-  const dy = [0, 1, 0, -1];
+  const direction = [
+    [1, 0],
+    [0, -1],
+    [-1, 0],
+    [0, 1],
+  ];
+  const queue = [[0, 0, null, 0]];
   while (queue.length !== 0) {
-    const point = queue.shift();
-    for (let i in dx) {
-      const nx = point.x + dx[i];
-      const ny = point.y + dy[i];
-      const dir = point.dir || -1;
-      if (nx >= 0 && ny >= 0 && nx < N && ny < N && board[nx][ny] === 0) {
-        if (dir === -1 || dir === i) {
-          if (dp[nx][ny][i] >= dp[point.x][point.y][i] + 100) {
-            dp[nx][ny][i] = dp[point.x][point.y][i] + 100;
-            queue.push({ x: nx, y: ny, dir: i });
-          }
-        } else {
-          if (dp[nx][ny][i] >= dp[point.x][point.y][dir] + 600) {
-            dp[nx][ny][i] = dp[point.x][point.y][dir] + 600;
-            queue.push({ x: nx, y: ny, dir: i });
-          }
-        }
-      }
-    }
+    const [x, y, dir, cost] = queue.shift();
+    if (board[x][y] < cost && board[x][y] > 0) continue;
+    board[x][y] = cost;
+    direction.forEach(([i, j], ndir) => {
+      if (dir !== null && Math.abs(ndir - dir) === 2) return;
+      const [nx, ny] = [x + i, y + j];
+      if (0 > nx || nx >= N || 0 > ny || ny >= N || board[nx][ny] === 1) return;
+      queue.push([nx, ny, ndir, dir !== null && dir !== ndir ? cost + 600 : cost + 100]);
+    });
   }
-  dp[N - 1][N - 1].sort((a, b) => a - b);
-  return dp[N - 1][N - 1][0];
+  return board[N - 1][N - 1];
 };
-
-console.log(
-  solution([
-    [0, 0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 1],
-    [0, 0, 1, 0, 0, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0],
-  ]),
-);
