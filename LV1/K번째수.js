@@ -1,9 +1,8 @@
 const solution = (array, command) => {
   const ans = [];
   command.forEach(([start, end, k]) => {
-    const arr = [...array];
-    const copyArr = arr.slice(start - 1, end).sort((a, b) => a - b);
-    ans.push(copyArr[k - 1]);
+    const arr = array.slice(start - 1, end).sort((a, b) => a - b);
+    ans.push(arr[k - 1]);
   });
   return ans;
 };
