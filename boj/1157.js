@@ -3,17 +3,20 @@ const input = fs.readFileSync('./stdin', 'utf8').trim().split('\n');
 
 const solution = (str) => {
   const word = str.toUpperCase();
-  const obj = {};
+  const arr = Array(26).fill(0);
+  const pivot = 'A'.charCodeAt();
   word.split('').forEach((item) => {
-    if (!obj[item]) obj[item] = 0;
-    obj[item]++;
+    arr[item.charCodeAt() - pivot]++;
   });
-  const arr = [];
-  for (let key in obj) {
-    arr.push([key, obj[key]]);
+  const maxValue = Math.max.apply(null, arr);
+  let idx = -1;
+  for (let i = 0; i < arr.length; i++) {
+    if (maxValue === arr[i]) {
+      if (idx !== -1) return '?';
+      idx = i;
+    }
   }
-  arr.sort(([_, a], [__, b]) => b - a);
-  return arr[0][1] === arr[1][1] ? '?' : arr[0][0];
+  return String.fromCharCode(pivot + idx);
 };
 
 console.log(solution(input[0]));
