@@ -40,6 +40,13 @@ class Heap {
 
     return top;
   }
+  sort() {
+    const arr = [];
+    while (this.heap.length) {
+      arr.push(this.dequeue());
+    }
+    return arr;
+  }
 
   swap(a, b) {
     const temp = this.heap[a];
@@ -64,9 +71,4 @@ heap.enqueue(20);
 heap.print();
 heap.enqueue(30);
 heap.print();
-console.log(heap.dequeue());
-console.log(heap.dequeue());
-console.log(heap.dequeue());
-console.log(heap.dequeue());
-console.log(heap.dequeue());
-console.log(heap.dequeue());
+console.log(heap.sort());
