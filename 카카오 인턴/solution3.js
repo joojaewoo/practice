@@ -1,33 +1,52 @@
 const solution = (n, k, cmd) => {
   let idx = k;
   let ans = '';
+  let head = { idx: 0, next: null, prev: null };
+  let cur = head;
+  for (let i = 1; i < n; i++) {
+    cur.next = {
+      idx: i,
+      next: null,
+      prev: cur,
+    };
+    cur = cur.next;
+  }
   const del = [];
+  cur = head;
+
+  for (let i = 0; i < k; i++) cur = cur.next;
+
   cmd.forEach((item) => {
     const [ins, cnt] = item.split(' ');
     switch (ins) {
       case 'D':
-        idx += +cnt;
+        for (let i = 0; i < cnt; i++) if (cur.next) cur = cur.next;
         break;
       case 'C':
-        del.push(idx);
-        idx = idx === n - del.length ? idx - 1 : idx;
+        del.push(cur);
+        if (cur.prev) cur.prev.next = cur.next;
+        if (cur.next) cur.next.prev = cur.prev;
+        if (cur.next) cur = cur.next;
+        else cur = cur.prev;
         break;
       case 'U':
-        idx -= +cnt;
+        for (let i = 0; i < cnt; i++) if (cur.prev) cur = cur.prev;
         break;
       case 'Z':
-        const index = del.pop();
-        idx = index <= idx ? idx + 1 : idx;
-        break;
+        const node = del.pop();
+        if (node.prev) node.prev.next = node;
+        if (node.next) node.next.prev = node;
     }
   });
-  for (let i = 0; i < n - del.length; i++) ans += 'O';
-  while (del.length > 0) {
-    const idx = del.pop();
-    ans = ans.substring(0, idx) + 'X' + ans.substring(idx);
+
+  const delArr = del.map(({ idx }) => idx).sort((a, b) => a - b);
+
+  for (let i = 0; i < n; i++) {
+    if (delArr.length > 0 && i === delArr[0]) {
+      ans += 'X';
+      delArr.shift();
+    } else ans += 'O';
   }
 
   return ans;
 };
-
-console.log(solution(8, 2, ['D 2', 'C', 'U 3', 'C', 'D 4', 'C', 'U 2', 'Z', 'Z']));
